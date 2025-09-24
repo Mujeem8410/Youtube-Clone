@@ -5,6 +5,7 @@ import VideoList from "./components/VideoList";
 import MiniPlayer from "./components/MiniPlayer";
 import "./App.css";
 
+
 function App() {
   const [arr, setArr] = useState([]);
   const [currentVideo, setCurrentVideo] = useState(null);
@@ -28,7 +29,7 @@ function App() {
   const [trending, setTrending] = useState([]);
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem("favorites")) || []);
 
-  const API_KEY = "AIzaSyDppnZ8iy11tbILBMjPt3taNgaMV1J2lbM";
+  const API_KEY = import.meta.env.VITE_API_KEY;
 
   const randomNames = [
     "Rahul Sharma",
@@ -44,6 +45,83 @@ function App() {
     "Kabir Khan",
     "Meera Nair"
   ];
+
+const [reactions, setReactions] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("reactions")) || {};
+  } catch {
+    return {};
+  }
+});
+
+useEffect(() => {
+  try {
+    localStorage.setItem("reactions", JSON.stringify(reactions));
+  } catch {
+    //ignore
+  }
+}, [reactions]);
+
+
+// get reaction object for a video (never returns undefined)
+const getReactionObj = (video) => {
+  if (!video) return { reaction: null, likes: 0, dislikes: 0 };
+  const vid = getVideoId(video);
+  return reactions[vid] || { reaction: null, likes: 0, dislikes: 0 };
+};
+
+// toggle like (mutually exclusive with dislike)
+const toggleLike = (video) => {
+  if (!video) return;
+  const vid = getVideoId(video);
+  setReactions((prev) => {
+    const curr = prev[vid] || { reaction: null, likes: 0, dislikes: 0 };
+    const next = { ...curr };
+
+    if (curr.reaction === "like") {
+      // undo like
+      next.reaction = null;
+      next.likes = Math.max(0, (next.likes || 0) - 1);
+    } else {
+      // switching from dislike -> like or neutral -> like
+      if (curr.reaction === "dislike") {
+        next.dislikes = Math.max(0, (next.dislikes || 0) - 1);
+      }
+      next.reaction = "like";
+      next.likes = (next.likes || 0) + 1;
+    }
+
+    return { ...prev, [vid]: next };
+  });
+};
+
+// toggle dislike (mutually exclusive)
+const toggleDislike = (video) => {
+  if (!video) return;
+  const vid = getVideoId(video);
+  setReactions((prev) => {
+    const curr = prev[vid] || { reaction: null, likes: 0, dislikes: 0 };
+    const next = { ...curr };
+
+    if (curr.reaction === "dislike") {
+      // undo dislike
+      next.reaction = null;
+      next.dislikes = Math.max(0, (next.dislikes || 0) - 1);
+    } else {
+      // switching from like -> dislike or neutral -> dislike
+      if (curr.reaction === "like") {
+        next.likes = Math.max(0, (next.likes || 0) - 1);
+      }
+      next.reaction = "dislike";
+      next.dislikes = (next.dislikes || 0) + 1;
+    }
+
+    return { ...prev, [vid]: next };
+  });
+};
+
+
+
 
   // Refs for containers and player
   const mainPlayerRef = useRef(null);
@@ -353,13 +431,37 @@ function App() {
             ➖
           </button>
         </div>
+        
 
         <div ref={mainPlayerRef} style={{ width: "100%", minHeight: 500, background: "#000" }} />
         <div className={`mt-2 ${darkMode ? "text-light" : "text-dark"}`}>
           <h5>{currentVideo.snippet.title}</h5>
           <small className="text-muted">{currentVideo.snippet.channelTitle}</small>
+           <div className="d-flex align-items-center gap-2 mt-2">
+      {(() => {
+        const r = getReactionObj(currentVideo);
+        return (
+          <>
+            <button
+              className={r.reaction === "like" ? "btn btn-primary" : "btn btn-outline-primary"}
+              onClick={() => toggleLike(currentVideo)}
+            >
+              👍 {r.likes || 0}
+            </button>
+
+            <button
+              className={r.reaction === "dislike" ? "btn btn-danger" : "btn btn-outline-danger"}
+              onClick={() => toggleDislike(currentVideo)}
+            >
+              👎 {r.dislikes || 0}
+            </button>
+          </>
+        );
+      })()}
+    </div>
         </div>
       </div>
+      
     );
   };
 

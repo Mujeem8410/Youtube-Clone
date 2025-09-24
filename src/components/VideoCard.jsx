@@ -18,7 +18,7 @@ function VideoCard({ video, onPlay, onFavorite, onRemove, isFavorite, darkMode, 
             ▶️ Play
           </button>
           <button
-            className="btn btn-outline-success mt-2 mb-2"
+            className="btn btn-info mt-2 mb-2"
             onClick={() => onQueue(video)}
           >
             ➕ Add to Queue
