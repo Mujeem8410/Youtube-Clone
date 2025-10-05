@@ -2,6 +2,7 @@ import React from "react";
 import VideoCard from "./VideoCard";
 
 function VideoList({ videos, onPlay, onFavorite, onRemove, isFavorite, darkMode , onQueue }) {
+  console.log(videos);
   return (
     <div className="row">
       {videos.map((video, i) => (
