@@ -13,7 +13,7 @@ This project demonstrates strong skills in frontend development, API integration
 
  Trending Section – Displays top trending videos in India dynamically.
 
-⏯ Mini Player (Picture-in-Picture) – Watch videos in a floating mini player while browsing other videos.
+ Mini Player (Picture-in-Picture) – Watch videos in a floating mini player while browsing other videos.
 
  Dark Mode / Light Mode – Toggle theme instantly for better user experience.
 
@@ -25,7 +25,7 @@ This project demonstrates strong skills in frontend development, API integration
 
  Like / Dislike System – Local voting system for each video.
 
-⏱ Queue System – Automatically plays the next video when the current one ends.
+ Queue System – Automatically plays the next video when the current one ends.
 
  Share Button – Copy video link and share directly.
 
@@ -66,13 +66,13 @@ Replace the key in App.jsx
 
 const API_KEY = "YOUR_API_KEY_HERE";
 
-💾 Data Persistence
+ Data Persistence
 Data Type	Storage Method	Description
 Favorites	LocalStorage	Permanently saves user’s liked videos
 Comments	LocalStorage	Saves comments for each video
 Watch History	LocalStorage	Automatically logs watched videos
 Theme	LocalStorage	Remembers last used mode (dark/light)
-🎯 Learning Outcomes
+ Learning Outcomes
 
 By building this project, the developer learned:
 
